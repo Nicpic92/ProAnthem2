@@ -1,17 +1,17 @@
 {
   "name": "proanthem-free",
   "version": "1.0.0",
-  "description": "ProAnthem Music Management - Free Standalone Version",
+  "description": "ProAnthem Music Management Ecosystem",
   "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
+  "engines": {
+    "node": "24.x"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
-    "pg": "^8.12.0"
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.11.0"
   },
-  "engines": {
-    "node": "18.x"
+  "devDependencies": {
+    "@vercel/node": "latest"
   }
 }
