@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Admin | ProAnthem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <header class="h-16 border-b border-gray-800 bg-black flex justify-between items-center px-6">
+        <div class="flex items-center space-x-4">
+            <a href="/dashboard" class="text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </a>
+            <h1 class="text-xl font-bold tracking-tighter uppercase">Admin <span class="text-red-500">Console</span></h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="text-xs bg-red-900/30 text-red-500 border border-red-500/20 px-2 py-1 rounded">Superuser Mode</span>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                <p class="text-xs text-gray-500 uppercase font-bold mb-1">Total Users</p>
+                <h3 id="stat-users" class="text-3xl font-black">--</h3>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                <p class="text-xs text-gray-500 uppercase font-bold mb-1">Active Bands</p>
+                <h3 id="stat-bands" class="text-3xl font-black">--</h3>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                <p class="text-xs text-gray-500 uppercase font-bold mb-1">Database Load</p>
+                <h3 class="text-3xl font-black text-green-500">Optimal</h3>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                <p class="text-xs text-gray-500 uppercase font-bold mb-1">Vercel Status</p>
+                <h3 class="text-3xl font-black text-blue-500">Live</h3>
+            </div>
+        </div>
+
+        <section class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
+            <div class="p-6 border-b border-gray-700 flex justify-between items-center">
+                <h2 class="text-xl font-bold">User Directory</h2>
+                <input type="text" id="admin-search" placeholder="Search by email..." class="bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-red-500">
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-900/50 text-xs text-gray-500 uppercase">
+                        <tr>
+                            <th class="p-4">User</th>
+                            <th class="p-4">Role</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4">Joined</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-user-table" class="divide-y divide-gray-700">
+                        <tr>
+                            <td colspan="5" class="p-10 text-center text-gray-600">Loading system data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="/js/admin.js"></script>
+</body>
+</html>
