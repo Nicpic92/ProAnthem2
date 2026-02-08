@@ -1,6 +1,7 @@
 {
   "version": 2,
-  "name": "proanthem-neon-integrated",
+  "name": "proanthem-neon-fixed",
+  "cleanUrls": true,
   "builds": [
     { "src": "api/**/*.js", "use": "@vercel/node" },
     { "src": "*.html", "use": "@vercel/static" },
@@ -9,21 +10,9 @@
     { "src": "assets/**/*", "use": "@vercel/static" }
   ],
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
+    { "source": "/api/signup", "destination": "/api/signup.js" },
+    { "source": "/api/login", "destination": "/api/login.js" },
     { "source": "/signup", "destination": "/signup.html" },
-    { "source": "/dashboard", "destination": "/dashboard.html" },
-    { "source": "/editor", "destination": "/ProjectAnthem.html" },
-    { "source": "/band", "destination": "/Band.html" },
-    { "source": "/stage-plot", "destination": "/stage-plot-editor.html" },
-    { "source": "/admin", "destination": "/admin.html" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
-      ]
-    }
+    { "source": "/dashboard", "destination": "/dashboard.html" }
   ]
 }
