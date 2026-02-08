@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const { email, password } = req.body;
 
     try {
-        // Fetch user and join with their specific role permissions from your Neon 'roles' table
+        // Join with your Neon 'roles' table to get granular permissions
         const userRes = await query(`
             SELECT u.*, r.can_access_tool, r.can_manage_band, r.can_use_setlists, r.can_use_stems 
             FROM users u
@@ -18,15 +18,17 @@ export default async function handler(req, res) {
 
         const user = userRes.rows[0];
 
+        // Verify user exists and password matches
         if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        // Verify if the assigned role has permission to access the ProAnthem tool
+        // Check if the role allows tool access
         if (!user.can_access_tool) {
-            return res.status(403).json({ message: 'Access denied: Role restricted.' });
+            return res.status(403).json({ message: 'Your account role does not have permission to access this tool.' });
         }
 
+        // Create the JWT payload with your Neon metadata
         const payload = {
             user: {
                 id: user.id,
@@ -42,9 +44,13 @@ export default async function handler(req, res) {
         };
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
-        res.status(200).json({ token });
+        
+        return res.status(200).json({ 
+            token,
+            message: 'Login successful'
+        });
     } catch (err) {
         console.error('Login Error:', err);
-        res.status(500).json({ message: 'Database connection error' });
+        return res.status(500).json({ message: 'Internal server error.' });
     }
 }
