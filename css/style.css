@@ -1,0 +1,114 @@
+/* ProAnthem Global Styles */
+
+:root {
+    --bg-dark: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --accent-blue: #3b82f6;
+    --accent-red: #ef4444;
+    --accent-green: #10b981;
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #f1f5f9;
+}
+
+/* Glassmorphism Effect */
+.glass-panel {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+}
+
+/* Headline Gradients */
+.headline-gradient {
+    background: linear-gradient(90deg, #fff 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Interactive Editor Styles */
+.fretboard-container {
+    overflow-x: auto;
+    padding: 20px 0;
+    scrollbar-width: thin;
+}
+
+.fret {
+    border-right: 2px solid #475569;
+    min-width: 60px;
+    height: 180px;
+    position: relative;
+}
+
+.string {
+    height: 2px;
+    background: #94a3b8;
+    width: 100%;
+    position: absolute;
+}
+
+/* Drum Pad Animations */
+.drum-pad {
+    transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+.drum-pad:active, .drum-pad.playing {
+    transform: scale(0.95);
+    background-color: var(--accent-blue);
+}
+
+/* Stage Plot Icons */
+.draggable-icon {
+    cursor: grab;
+    transition: opacity 0.2s;
+    user-select: none;
+}
+
+.draggable-icon:active {
+    cursor: grabbing;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Utility Classes */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--accent-blue);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
