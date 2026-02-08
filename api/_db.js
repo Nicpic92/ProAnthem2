@@ -1,33 +1,33 @@
 const { Pool } = require('pg');
 
-// Initialize the connection pool using the environment variable provided in Vercel
+// Create a new pool using the Neon connection string from your environment variables
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
   ssl: {
-    rejectUnauthorized: false // Required for secure connection to Neon
+    rejectUnauthorized: false // Required for Neon secure connections
   },
-  // Optimize for serverless: close idle connections quickly
+  // Optimized for serverless functions
+  max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 5000,
 });
 
 module.exports = {
   /**
-   * Global query helper with built-in logging for Master Developers
+   * Master query helper with detailed logging to help us catch any future ENOTFOUND errors
    */
   query: async (text, params) => {
     const start = Date.now();
     try {
       const res = await pool.query(text, params);
       const duration = Date.now() - start;
-      console.log('Executed Query:', { text, duration, rows: res.rowCount });
+      console.log('Neon Query Success:', { text, duration, rows: res.rowCount });
       return res;
     } catch (err) {
-      console.error('Database Query Error:', {
-        text,
+      console.error('Neon Query Failure:', {
         message: err.message,
-        code: err.code, // Useful for catching 23505 (Unique Violation)
-        detail: err.detail
+        stack: err.stack,
+        host: err.address || 'Check Environment Variables'
       });
       throw err;
     }
