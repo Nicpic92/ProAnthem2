@@ -1,52 +1,33 @@
 /**
  * api/songs.js
- * Master handler for fetching and creating songs
+ * Master handler for the Lyric Sheets table
  */
 const { query } = require('./_db');
 
 export default async function handler(req, res) {
-    // 1. GET: Fetch songs for the authenticated user
+    // GET: Fetch all songs
     if (req.method === 'GET') {
         try {
-            // We fetch all columns from lyric_sheets, sorted by most recent
-            const result = await query(`
-                SELECT * FROM lyric_sheets 
-                ORDER BY updated_at DESC
-            `);
+            const result = await query('SELECT * FROM lyric_sheets ORDER BY updated_at DESC');
             return res.status(200).json(result.rows);
         } catch (err) {
-            console.error('Fetch Songs Error:', err);
-            return res.status(500).json({ message: 'Database error loading songs.' });
+            return res.status(500).json({ message: 'Database error', error: err.message });
         }
     }
 
-    // 2. POST: Create a new song entry
+    // POST: Save a new song block (JSONB)
     if (req.method === 'POST') {
-        const { title, artist, song_blocks, user_email, band_id } = req.body;
-
-        // Validation for required fields
-        if (!title || !user_email) {
-            return res.status(400).json({ message: 'Missing title or user email.' });
-        }
-
+        const { title, artist, song_blocks, user_email } = req.body;
         try {
             const sql = `
-                INSERT INTO lyric_sheets (title, artist, song_blocks, user_email, band_id, updated_at)
-                VALUES ($1, $2, $3, $4, $5, NOW())
-                RETURNING *;
+                INSERT INTO lyric_sheets (title, artist, song_blocks, user_email, updated_at)
+                VALUES ($1, $2, $3, $4, NOW())
+                RETURNING id;
             `;
-            // song_blocks is stored as JSONB to support your HTML tool data
-            const result = await query(sql, [title, artist, song_blocks, user_email, band_id]);
-            
-            return res.status(201).json({ 
-                message: 'Song successfully saved to Neon.',
-                song: result.rows[0]
-            });
+            const result = await query(sql, [title, artist, song_blocks, user_email]);
+            return res.status(201).json({ id: result.rows[0].id, message: 'Saved to Neon' });
         } catch (err) {
-            console.error('Save Song Error:', err);
-            return res.status(500).json({ message: 'Database error during save.' });
+            return res.status(500).json({ message: 'Save failed', error: err.message });
         }
     }
-
-    return res.status(405).json({ message: 'Method Not Allowed' });
 }
