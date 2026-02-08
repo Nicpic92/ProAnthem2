@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     const { email, password } = req.body;
 
     try {
-        // We join with the roles table to check permissions immediately
+        // Query adjusted to look for 'password_hash' and 'role_id'
         const userRes = await query(`
             SELECT u.*, r.can_access_tool, r.can_manage_band, r.can_use_setlists 
             FROM users u
@@ -27,18 +27,18 @@ export default async function handler(req, res) {
             return res.status(401).json({ message: 'Invalid credentials.' });
         }
 
-        // 2. Compare password with the password_hash column
+        // 2. Compare password with the 'password_hash' column
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid credentials.' });
         }
 
-        // 3. Ensure the role actually has access (avoids permission errors)
+        // 3. Check for tool access permission
         if (!user.can_access_tool) {
-            return res.status(403).json({ message: 'Access denied: Role restricted.' });
+            return res.status(403).json({ message: 'Access denied: Role lacks permissions.' });
         }
 
-        // 4. Create the JWT payload
+        // 4. Generate JWT
         const payload = {
             user: {
                 id: user.id,
