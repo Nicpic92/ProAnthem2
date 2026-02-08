@@ -1,20 +1,16 @@
 {
   "version": 2,
-  "name": "proanthem-free",
+  "name": "proanthem-neon-integrated",
   "builds": [
     { "src": "api/**/*.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "proanthem_index.html", "use": "@vercel/static" },
-    { "src": "dashboard.html", "use": "@vercel/static" },
-    { "src": "ProjectAnthem.html", "use": "@vercel/static" },
-    { "src": "Band.html", "use": "@vercel/static" },
-    { "src": "stage-plot-editor.html", "use": "@vercel/static" },
-    { "src": "admin.html", "use": "@vercel/static" },
+    { "src": "*.html", "use": "@vercel/static" },
     { "src": "js/**/*.js", "use": "@vercel/static" },
-    { "src": "css/**/*.css", "use": "@vercel/static" }
+    { "src": "css/**/*.css", "use": "@vercel/static" },
+    { "src": "assets/**/*", "use": "@vercel/static" }
   ],
   "rewrites": [
-    { "source": "/login", "destination": "/proanthem_index.html" },
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/signup", "destination": "/signup.html" },
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/editor", "destination": "/ProjectAnthem.html" },
     { "source": "/band", "destination": "/Band.html" },
@@ -25,9 +21,8 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
       ]
     }
   ]
