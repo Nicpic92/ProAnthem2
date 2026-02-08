@@ -57,11 +57,14 @@
             };
 
             try {
+                // Hits /api/signup
                 await apiRequest('signup', payload, 'POST');
                 alert('Account created! Please sign in.');
                 window.location.href = '/index.html';
             } catch (err) {
-                alert(err.message || 'Signup failed.');
+                // This catches the "Database error during registration" from your console
+                console.error("Signup failed:", err);
+                alert(err.message || 'Signup failed. Email might already exist.');
                 btn.disabled = false;
                 btn.innerText = 'Register Account';
             }
