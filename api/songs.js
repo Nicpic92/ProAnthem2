@@ -1,12 +1,8 @@
 const { query } = require('./_db');
 
 module.exports = async (req, res) => {
-    // Enable CORS
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    console.log("Songs API Hit:", req.method);
     
-    if (req.method === 'OPTIONS') return res.status(200).end();
-
     if (req.method === 'GET') {
         try {
             const result = await query('SELECT * FROM lyric_sheets ORDER BY updated_at DESC');
