@@ -3,43 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProAnthem - Your Band's Command Center</title>
+    <title>Login | ProAnthem</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #111827, #000000);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
 </head>
-<body class="marketing flex flex-col min-h-screen bg-gray-900 text-white">
-    <header class="container mx-auto p-6 flex justify-between items-center">
-        <div class="flex items-center space-x-4">
-            <img src="/assets/logo_pa.jpg" alt="ProAnthem Logo" class="h-12">
-            <h1 class="text-4xl font-bold headline-gradient">ProAnthem</h1>
-        </div>
-        <div id="nav-auth-section">
-            <button onclick="document.getElementById('auth-modal').classList.remove('hidden')" class="btn btn-primary">Login / Sign Up</button>
-        </div>
-    </header>
+<body class="text-gray-100 min-h-screen flex flex-col items-center justify-center p-6">
 
-    <main class="container mx-auto px-6 py-20 flex-grow text-center">
-        <h2 class="text-6xl font-extrabold mb-6">Everything your band needs. <span class="text-blue-500">Free forever.</span></h2>
-        <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10">Manage setlists, stage plots, finances, and merch inventory in one bold dashboard.</p>
-        <a href="/demo" class="btn btn-secondary px-8 py-4 text-lg">Try the Live Demo</a>
-    </main>
+    <div class="mb-10 text-center">
+        <img src="/assets/logo_pa.jpg" alt="ProAnthem Logo" class="w-24 h-24 mx-auto mb-4 rounded-xl shadow-2xl border border-gray-800">
+        <h1 class="text-4xl font-black tracking-tighter uppercase italic">Pro<span class="text-blue-500">Anthem</span></h1>
+        <p class="text-gray-500 text-sm mt-2 uppercase tracking-widest">Master Full-Stack Management</p>
+    </div>
 
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-        <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 w-full max-w-md">
-            <h3 class="text-2xl font-bold mb-6 text-center">Welcome to ProAnthem</h3>
-            <form id="login-form" class="space-y-4">
-                <input type="email" name="email" placeholder="Email" required class="w-full p-3 rounded bg-gray-900 border border-gray-600">
-                <input type="password" name="password" placeholder="Password" required class="w-full p-3 rounded bg-gray-900 border border-gray-600">
-                <button type="submit" class="w-full btn btn-primary py-3">Sign In</button>
-            </form>
-            <p class="mt-4 text-center text-sm text-gray-400">Don't have an account? <a href="#" class="text-blue-400">Sign up</a></p>
-            <button onclick="document.getElementById('auth-modal').classList.add('hidden')" class="mt-6 text-gray-500 text-sm w-full">Close</button>
+    <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl">
+        <h2 class="text-2xl font-bold mb-6 text-center">Welcome Back</h2>
+        
+        <form id="login-form" class="space-y-5">
+            <div>
+                <label for="email" class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Email Address</label>
+                <input type="email" id="email" required
+                    class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="name@mirra.com">
+            </div>
+            
+            <div>
+                <label for="password" class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Password</label>
+                <input type="password" id="password" required
+                    class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="••••••••">
+            </div>
+
+            <div class="flex items-center justify-between text-xs py-2">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" class="rounded bg-gray-900 border-gray-700 text-blue-500">
+                    <span class="text-gray-400">Remember Me</span>
+                </label>
+                <a href="#" class="text-blue-500 hover:underline">Forgot Password?</a>
+            </div>
+
+            <button type="submit" id="login-btn" 
+                class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all transform active:scale-95">
+                Sign In to Dashboard
+            </button>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-gray-800 text-center">
+            <p class="text-sm text-gray-500">
+                Don't have a band account? 
+                <a href="/signup.html" class="text-white font-bold hover:text-blue-400 transition-colors ml-1">Create Account</a>
+            </p>
         </div>
     </div>
 
+    <div class="mt-12 flex items-center gap-4 text-[10px] text-gray-600 font-mono uppercase tracking-widest">
+        <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Neon Database Linked</span>
+        <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Vercel Edge Live</span>
+    </div>
+
     <script type="module">
+        // Import directly from your auth controller
         import { handleLogin } from './js/auth.js';
-        document.getElementById('login-form').addEventListener('submit', handleLogin);
+
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('login-btn');
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            // Visual feedback
+            loginBtn.disabled = true;
+            loginBtn.innerText = 'Authenticating...';
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // This matches the handleLogin function in js/auth.js
+                await handleLogin(email, password);
+            } catch (error) {
+                console.error('Frontend Login Error:', error);
+                // Reset button state on error
+                loginBtn.disabled = false;
+                loginBtn.innerText = 'Sign In to Dashboard';
+            }
+        });
     </script>
 </body>
 </html>
