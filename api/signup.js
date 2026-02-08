@@ -2,64 +2,41 @@ const { query } = require('./_db');
 const bcrypt = require('bcryptjs');
 
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method Not Allowed' });
-    }
+    if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' });
 
+    // Destructure using EXACT same names as the payload in signup.html
     const { email, password, first_name, last_name } = req.body;
 
-    // Validate required fields to match your frontend signup.html
-    if (!email || !password || !first_name) {
+    // Check for variables - if any are missing, returns the error from your screenshot
+    if (!email || !password || !first_name || !last_name) {
         return res.status(400).json({ 
-            message: 'Missing required fields: email, password, and first_name.' 
+            message: 'Missing required fields: email, password, first_name, and last_name.' 
         });
     }
 
     try {
-        // Hash the password for your 'password_hash' column
         const hashed = await bcrypt.hash(password, 10);
         
-        /**
-         * Neon Schema Match:
-         * We use 'role_id = 4' as a default for new members based on your user data.
-         * We populate created_at and updated_at manually to ensure consistency.
-         */
+        // SQL using column names: password_hash and role_id
+        // Using role_id 4 (User) as the default for new accounts
         const sql = `
-            INSERT INTO users (
-                email, 
-                password_hash, 
-                first_name, 
-                last_name, 
-                role_id, 
-                created_at, 
-                updated_at
-            )
-            VALUES ($1, $2, $3, $4, 4, NOW(), NOW())
-            RETURNING email, role_id;
+            INSERT INTO users (email, password_hash, first_name, last_name, role_id)
+            VALUES ($1, $2, $3, $4, 4)
+            RETURNING id, email;
         `;
         
         const result = await query(sql, [email, hashed, first_name, last_name]);
         
         return res.status(201).json({
-            message: 'Account created successfully',
+            message: 'Signup successful',
             user: result.rows[0]
         });
-
     } catch (err) {
-        // Log the error in Vercel Functions console for debugging
-        console.error('Detailed Signup Error:', err);
-
-        // Handle the "Unique Violation" for existing emails
+        console.error('Signup Execution Error:', err);
+        // Catch duplicate email error (23505)
         if (err.code === '23505') {
-            return res.status(409).json({ 
-                message: 'This email is already registered. Please log in.' 
-            });
+            return res.status(409).json({ message: 'Email already exists.' });
         }
-
-        // Generic error for schema mismatches or connection drops
-        return res.status(500).json({ 
-            message: 'Database error during registration.',
-            error: err.message // Temporary: remove in final production for security
-        });
+        return res.status(500).json({ message: 'Database error during registration.' });
     }
 }
