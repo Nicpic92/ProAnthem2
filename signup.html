@@ -3,61 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account | ProAnthem</title>
+    <title>Signup | ProAnthem</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        body { background: radial-gradient(circle at top left, #111827, #000000); }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-    </style>
 </head>
-<body class="text-gray-100 min-h-screen flex flex-col items-center justify-center p-6">
-
-    <div class="mb-10 text-center">
-        <h1 class="text-4xl font-black tracking-tighter uppercase italic">Join Pro<span class="text-blue-500">Anthem</span></h1>
-        <p class="text-gray-500 text-sm mt-2 uppercase tracking-widest">Connect Your Neon Database</p>
-    </div>
-
-    <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl">
+<body class="bg-black text-gray-100 min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-md bg-gray-900 p-8 rounded-3xl border border-gray-800 shadow-2xl">
+        <h2 class="text-2xl font-bold mb-6 text-center">Create Account</h2>
+        
         <form id="signup-form" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">First Name</label>
-                    <input type="text" id="first_name" required class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
+                    <input type="text" id="first_name" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Last Name</label>
-                    <input type="text" id="last_name" required class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
+                    <input type="text" id="last_name" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
                 </div>
             </div>
-
             <div>
                 <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Email</label>
-                <input type="email" id="email" required class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
+                <input type="email" id="email" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
             </div>
-
             <div>
                 <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Password</label>
-                <input type="password" id="password" required class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
+                <input type="password" id="password" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
             </div>
-
             <button type="submit" id="signup-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl mt-4 transition-all active:scale-95">
-                Register Artist Account
+                Register Account
             </button>
         </form>
 
         <div class="mt-6 text-center">
-            <a href="/index.html" class="text-xs text-gray-500 hover:text-white transition-colors">Already have an account? Sign In</a>
+            <a href="/index.html" class="text-xs text-gray-500 hover:text-white transition-colors">Back to Login</a>
         </div>
     </div>
 
     <script type="module">
         import { apiRequest } from './js/api.js';
-
         const signupForm = document.getElementById('signup-form');
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -73,13 +57,13 @@
             };
 
             try {
-                const res = await apiRequest('signup', payload, 'POST');
-                alert('Account created! Please log in.');
+                await apiRequest('signup', payload, 'POST');
+                alert('Account created! Please sign in.');
                 window.location.href = '/index.html';
             } catch (err) {
-                alert(err.message || 'Signup failed');
+                alert(err.message || 'Signup failed.');
                 btn.disabled = false;
-                btn.innerText = 'Register Artist Account';
+                btn.innerText = 'Register Account';
             }
         });
     </script>
