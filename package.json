@@ -1,11 +1,17 @@
 {
   "name": "proanthem-free",
   "version": "1.0.0",
-  "description": "ProAnthem Music Management - Free Version",
+  "description": "ProAnthem Music Management - Free Standalone Version",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.12.0"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
