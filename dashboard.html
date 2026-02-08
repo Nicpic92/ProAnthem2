@@ -3,47 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - ProAnthem</title>
+    <title>Dashboard | ProAnthem</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="tool bg-gray-900 text-gray-100 min-h-screen">
-    <header class="p-6 border-b border-gray-800 flex justify-between items-center">
-        <div class="flex items-center space-x-4">
-            <img src="/assets/logo_pa.jpg" alt="Logo" class="h-10">
-            <h1 class="text-2xl font-bold">Dashboard</h1>
-        </div>
-        <div class="flex items-center gap-4">
-            <span id="welcome-user" class="text-gray-400"></span>
-            <button id="logout-btn" class="text-sm hover:text-red-500">Logout</button>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <header class="p-6 border-b border-gray-800 bg-gray-900 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <img src="/assets/logo_pa.jpg" alt="ProAnthem Logo" class="h-10 rounded">
+                <h1 class="text-2xl font-bold tracking-tight">ProAnthem <span class="text-blue-500 text-sm font-normal">Free</span></h1>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="text-right hidden sm:block">
+                    <p id="user-display-name" class="text-sm font-medium"></p>
+                    <p id="user-role-badge" class="text-xs text-blue-400 uppercase tracking-widest"></p>
+                </div>
+                <button id="logout-btn" class="bg-gray-800 hover:bg-red-900/40 text-gray-300 hover:text-red-400 px-4 py-2 rounded-lg text-sm transition-all border border-gray-700">
+                    Logout
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="container mx-auto p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <a href="/ProjectAnthem.html" class="feature-card p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-blue-500">
-            <h3 class="text-xl font-bold mb-2">Song Editor</h3>
-            <p class="text-gray-400 text-sm">Create charts, tabs, and lyric sheets.</p>
-        </a>
-        <a href="/stage-plot-editor.html" class="feature-card p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-red-500">
-            <h3 class="text-xl font-bold mb-2">Stage Plots</h3>
-            <p class="text-gray-400 text-sm">Design your technical rider and stage layout.</p>
-        </a>
-        <a href="/Band.html" class="feature-card p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-green-500">
-            <h3 class="text-xl font-bold mb-2">Band Management</h3>
-            <p class="text-gray-400 text-sm">Manage merch, finances, and setlists.</p>
-        </a>
+    <main class="container mx-auto p-8">
+        <div class="mb-10">
+            <h2 class="text-4xl font-extrabold mb-2">Welcome Back.</h2>
+            <p class="text-gray-400">Select a tool to begin managing your performance.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a href="/ProjectAnthem.html" class="group p-8 rounded-2xl bg-gray-800/50 border border-gray-700 hover:border-blue-500 transition-all hover:translate-y-[-4px]">
+                <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-600/40 transition-colors">
+                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Song Editor</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Build chord charts, interactive fretboards, and drum tabs with real-time audio playback.</p>
+            </a>
+
+            <a href="/stage-plot-editor.html" class="group p-8 rounded-2xl bg-gray-800/50 border border-gray-700 hover:border-red-500 transition-all hover:translate-y-[-4px]">
+                <div class="w-12 h-12 bg-red-600/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-red-600/40 transition-colors">
+                    <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Stage Plots</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Drag-and-drop technical riders. Layout your inputs, monitors, and backline for the sound engineer.</p>
+            </a>
+
+            <a href="/Band.html" class="group p-8 rounded-2xl bg-gray-800/50 border border-gray-700 hover:border-green-500 transition-all hover:translate-y-[-4px]">
+                <div class="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-green-600/40 transition-colors">
+                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Band Manager</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Centralize your setlists, track merch inventory, and manage show finances in one place.</p>
+            </a>
+        </div>
     </main>
 
     <script type="module">
-        import { getUserPayload, checkAccess } from './js/auth.js';
+        import { getUserPayload, checkAccess, logout } from './js/auth.js';
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Guard the page
             if (!checkAccess()) return;
+
             const user = getUserPayload();
-            document.getElementById('welcome-user').textContent = `Hello, ${user.name}`;
-            document.getElementById('logout-btn').onclick = () => {
-                localStorage.removeItem('user_token');
-                window.location.href = '/proanthem_index.html';
-            };
+            if (user) {
+                document.getElementById('user-display-name').textContent = user.name;
+                document.getElementById('user-role-badge').textContent = user.role;
+            }
+
+            document.getElementById('logout-btn').addEventListener('click', logout);
         });
     </script>
 </body>
