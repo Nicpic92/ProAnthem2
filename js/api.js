@@ -7,13 +7,21 @@ export async function apiRequest(endpoint, data = null, method = 'GET') {
     if (token) options.headers['Authorization'] = `Bearer ${token}`;
     if (data) options.body = JSON.stringify(data);
 
-    const response = await fetch(`/api/${endpoint}`, options);
+    try {
+        const response = await fetch(`/api/${endpoint}`, options);
 
-    if (response.status === 401) {
-        localStorage.removeItem('user_token');
-        window.location.href = '/proanthem_index.html';
-        return;
+        if (response.status === 401) {
+            localStorage.removeItem('user_token');
+            window.location.href = '/proanthem_index.html';
+            return;
+        }
+
+        if (response.status === 204) return null;
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'API Error');
+        return result;
+    } catch (error) {
+        console.error('API Request Failed:', error);
+        throw error;
     }
-    if (response.status === 204) return null;
-    return await response.json();
 }
