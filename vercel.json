@@ -1,12 +1,46 @@
 {
   "version": 2,
+  "name": "proanthem-free",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/dashboard", "destination": "/dashboard.html" },
-    { "source": "/projectanthem", "destination": "/ProjectAnthem.html" },
-    { "source": "/demo", "destination": "/Demo.html" },
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/login", "destination": "/proanthem_index.html" },
-    { "source": "/bands/:slug", "destination": "/band-profile.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/projectanthem",
+      "destination": "/ProjectAnthem.html"
+    },
+    {
+      "source": "/demo",
+      "destination": "/Demo.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/pricing.html"
+    },
+    {
+      "source": "/stage-plot-editor",
+      "destination": "/stage-plot-editor.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/proanthem_index.html"
+    },
+    {
+      "source": "/bands/:slug",
+      "destination": "/band-profile.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
   ]
 }
