@@ -3,45 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup | ProAnthem</title>
+    <title>Fresh Start Signup | ProAnthem</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="bg-black text-gray-100 min-h-screen flex items-center justify-center p-6">
     <div class="w-full max-w-md bg-gray-900 p-8 rounded-3xl border border-gray-800 shadow-2xl">
-        <h2 class="text-2xl font-bold mb-6 text-center">Create Account</h2>
+        <h2 class="text-2xl font-bold mb-6 text-center italic">PRO<span class="text-blue-500">ANTHEM</span> SIGNUP</h2>
         
         <form id="signup-form" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">First Name</label>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">First Name</label>
                     <input type="text" id="first_name" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Last Name</label>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Last Name</label>
                     <input type="text" id="last_name" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
                 </div>
             </div>
             <div>
-                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Email</label>
+                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Email Address</label>
                 <input type="email" id="email" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
             </div>
             <div>
-                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Password</label>
+                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Password</label>
                 <input type="password" id="password" required class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
             </div>
             <button type="submit" id="signup-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl mt-4 transition-all active:scale-95">
-                Register Account
+                Create Fresh Account
             </button>
         </form>
-
-        <div class="mt-6 text-center">
-            <a href="/index.html" class="text-xs text-gray-500 hover:text-white transition-colors">Back to Login</a>
-        </div>
     </div>
 
     <script type="module">
         import { apiRequest } from './js/api.js';
+
         const signupForm = document.getElementById('signup-form');
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -57,16 +54,15 @@
             };
 
             try {
-                // Hits /api/signup
+                // apiRequest will target /api/signup
                 await apiRequest('signup', payload, 'POST');
-                alert('Account created! Please sign in.');
+                alert('Account created! Now try logging in.');
                 window.location.href = '/index.html';
             } catch (err) {
-                // This catches the "Database error during registration" from your console
-                console.error("Signup failed:", err);
-                alert(err.message || 'Signup failed. Email might already exist.');
+                // This alerts the "Database error during registration" from your screenshot
+                alert(err.message || 'Signup failed.');
                 btn.disabled = false;
-                btn.innerText = 'Register Account';
+                btn.innerText = 'Create Fresh Account';
             }
         });
     </script>
