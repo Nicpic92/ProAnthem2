@@ -1,5 +1,6 @@
 /**
- * js/auth.js - FULL UNTRUNCATED CODE
+ * js/auth.js
+ * Consolidated logic for auth and redirection
  */
 import { apiRequest } from './api.js';
 
@@ -22,7 +23,10 @@ export function getUserPayload() {
     try {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        return JSON.parse(window.atob(base64)).user;
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload).user;
     } catch (e) {
         return null;
     }
@@ -36,8 +40,8 @@ export async function handleLogin(email, password) {
             window.location.href = '/dashboard.html';
         }
     } catch (err) {
-        console.error('Login logic failed:', err);
-        alert(err.message || 'Login failed. Please check credentials.');
+        console.error('Login failed:', err);
+        alert(err.message || 'Check credentials or role permissions.');
         throw err;
     }
 }
