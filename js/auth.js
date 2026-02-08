@@ -22,10 +22,7 @@ export function getUserPayload() {
     try {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload).user;
+        return JSON.parse(window.atob(base64)).user;
     } catch (e) {
         return null;
     }
@@ -37,11 +34,10 @@ export async function handleLogin(email, password) {
         if (data.token) {
             saveToken(data.token);
             window.location.href = '/dashboard.html';
-        } else {
-            throw new Error(data.message || 'Login failed');
         }
     } catch (err) {
-        alert(err.message || 'Login error. Check Neon connection.');
+        console.error('Login logic failed:', err);
+        alert(err.message || 'Login failed. Please check credentials.');
         throw err;
     }
 }
