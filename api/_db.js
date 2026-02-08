@@ -1,14 +1,13 @@
+/**
+ * api/_db.js - FULL UNTRUNCATED CODE
+ */
 const { Pool } = require('pg');
 
-// We use a Connection Pool for better performance on Vercel
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false // Required for most managed Postgres instances (like Neon or Railway)
-    }
+  connectionString: process.env.POSTGRES_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 module.exports = {
-    query: (text, params) => pool.query(text, params),
-    pool: pool
+  query: (text, params) => pool.query(text, params),
 };
