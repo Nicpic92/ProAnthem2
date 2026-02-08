@@ -1,6 +1,6 @@
 /**
  * api/login.js
- * Master-level login handler for fresh Neon schema
+ * Synchronized with fresh Neon Schema (password_hash and role_id)
  */
 const { query } = require('./_db');
 const bcrypt = require('bcryptjs');
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     const { email, password } = req.body;
 
     try {
-        // Query adjusted to look for 'password_hash' and 'role_id'
+        // Query adjusted to match the fresh schema columns
         const userRes = await query(`
             SELECT u.*, r.can_access_tool, r.can_manage_band, r.can_use_setlists 
             FROM users u
@@ -22,23 +22,23 @@ export default async function handler(req, res) {
 
         const user = userRes.rows[0];
 
-        // 1. Verify user exists
+        // 1. Check if user exists
         if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials.' });
+            return res.status(401).json({ message: 'Invalid email or password.' });
         }
 
-        // 2. Compare password with the 'password_hash' column
+        // 2. Compare password against 'password_hash' column
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid credentials.' });
+            return res.status(401).json({ message: 'Invalid email or password.' });
         }
 
-        // 3. Check for tool access permission
+        // 3. Ensure the role allows tool access
         if (!user.can_access_tool) {
-            return res.status(403).json({ message: 'Access denied: Role lacks permissions.' });
+            return res.status(403).json({ message: 'Access denied: Role restricted.' });
         }
 
-        // 4. Generate JWT
+        // 4. Create Token Payload
         const payload = {
             user: {
                 id: user.id,
@@ -60,7 +60,8 @@ export default async function handler(req, res) {
         });
 
     } catch (err) {
-        console.error('Login Error:', err);
-        return res.status(500).json({ message: 'Database error during login.' });
+        console.error('Login API Error:', err);
+        // Providing the error message in the response temporarily for debugging
+        return res.status(500).json({ message: 'Database error during login.', error: err.message });
     }
 }
