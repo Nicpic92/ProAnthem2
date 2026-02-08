@@ -1,18 +1,13 @@
 {
   "version": 2,
-  "name": "proanthem-neon-fixed",
   "cleanUrls": true,
-  "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node" },
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "js/**/*.js", "use": "@vercel/static" },
-    { "src": "css/**/*.css", "use": "@vercel/static" },
-    { "src": "assets/**/*", "use": "@vercel/static" }
-  ],
   "rewrites": [
     { "source": "/api/signup", "destination": "/api/signup.js" },
     { "source": "/api/login", "destination": "/api/login.js" },
+    { "source": "/api/songs", "destination": "/api/songs.js" },
+    { "source": "/api/setlists", "destination": "/api/setlists.js" },
     { "source": "/signup", "destination": "/signup.html" },
-    { "source": "/dashboard", "destination": "/dashboard.html" }
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/project-anthem", "destination": "/ProjectAnthem.html" }
   ]
 }
