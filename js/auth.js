@@ -1,11 +1,15 @@
 import { apiRequest } from './api.js';
 
+export function getToken() { return localStorage.getItem('user_token'); }
+
 export function getUserPayload() {
-    const token = localStorage.getItem('user_token');
+    const token = getToken();
     if (!token) return null;
     try {
-        return JSON.parse(atob(token.split('.')[1])).user;
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.user || null;
     } catch (e) {
+        localStorage.removeItem('user_token');
         return null;
     }
 }
@@ -16,21 +20,21 @@ export function checkAccess() {
         window.location.href = '/proanthem_index.html';
         return false;
     }
-    return true;
+    return true; // Everyone is 'active' in the free version
 }
 
-export async function handleLogin(event) {
-    event.preventDefault();
-    const email = event.target.email.value;
-    const password = event.target.password.value;
+export async function handleLogin(e) {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
 
     try {
-        const res = await apiRequest('login', { email, password }, 'POST');
-        if (res.token) {
-            localStorage.setItem('user_token', res.token);
+        const data = await apiRequest('login', { email, password }, 'POST');
+        if (data.token) {
+            localStorage.setItem('user_token', data.token);
             window.location.href = '/dashboard.html';
         }
     } catch (err) {
-        alert(err.message);
+        alert('Login failed: ' + err.message);
     }
 }
