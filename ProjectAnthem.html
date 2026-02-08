@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Editor | ProAnthem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-gray-900 text-gray-100 overflow-hidden h-screen flex flex-col">
+    <header class="h-16 border-b border-gray-800 bg-gray-950 flex justify-between items-center px-6 shrink-0">
+        <div class="flex items-center space-x-6">
+            <a href="/dashboard" class="text-gray-400 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </a>
+            <div class="h-6 w-px bg-gray-800"></div>
+            <div>
+                <h1 id="active-song-title" class="text-lg font-bold">New Song</h1>
+                <p id="active-song-meta" class="text-xs text-gray-500 uppercase tracking-widest">Editing Draft</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button id="save-song-btn" class="btn btn-primary px-4 py-2 text-sm">Save Changes</button>
+            <button id="export-pdf-btn" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm border border-gray-700">Export PDF</button>
+        </div>
+    </header>
+
+    <div class="flex flex-grow overflow-hidden">
+        <aside class="w-64 border-r border-gray-800 bg-gray-900/50 flex flex-col shrink-0">
+            <div class="p-4 border-b border-gray-800">
+                <button id="new-song-btn" class="w-full py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm font-semibold transition-all">
+                    + New Song
+                </button>
+            </div>
+            <ul id="song-list-items" class="flex-grow overflow-y-auto">
+                </ul>
+        </aside>
+
+        <section class="flex-grow flex flex-col bg-gray-900 overflow-hidden">
+            <div class="h-14 border-b border-gray-800 bg-gray-900/80 flex items-center px-4 space-x-2 shrink-0">
+                <button class="tool-tab active px-4 py-1 text-sm rounded-md bg-blue-600/20 text-blue-400 border border-blue-500/50" data-tool="chords">Chords & Lyrics</button>
+                <button class="tool-tab px-4 py-1 text-sm rounded-md text-gray-400 hover:bg-gray-800" data-tool="fretboard">Fretboard</button>
+                <button class="tool-tab px-4 py-1 text-sm rounded-md text-gray-400 hover:bg-gray-800" data-tool="drums">Drum Tab</button>
+            </div>
+
+            <div id="block-editor-container" class="flex-grow overflow-y-auto p-8 relative">
+                <div id="editor-placeholder" class="h-full flex flex-col items-center justify-center text-gray-500">
+                    <svg class="w-16 h-16 mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    <p>Select a song or create a new one to begin.</p>
+                </div>
+            </div>
+        </section>
+
+        <aside class="w-72 border-l border-gray-800 bg-gray-900/50 p-6 hidden lg:block overflow-y-auto shrink-0">
+            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Properties</h4>
+            <div id="inspector-content" class="space-y-6">
+                <div>
+                    <label class="block text-xs text-gray-500 mb-2">Key</label>
+                    <select id="song-key" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-sm">
+                        <option>C</option><option>G</option><option>D</option><option>A</option><option>E</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-2">BPM</label>
+                    <input type="number" id="song-bpm" value="120" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-sm">
+                </div>
+                <div class="pt-6 border-t border-gray-800">
+                    <label class="block text-xs text-gray-500 mb-2">Audio Stems</label>
+                    <div id="stem-list" class="space-y-2">
+                        </div>
+                    <button class="mt-4 text-xs text-blue-500 hover:text-blue-400">+ Upload Stem</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="/js/main.js"></script>
+</body>
+</html>
