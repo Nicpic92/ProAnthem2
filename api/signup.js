@@ -1,27 +1,24 @@
+/**
+ * api/signup.js - FULL UNTRUNCATED CODE
+ */
 const { query } = require('./_db');
 const bcrypt = require('bcryptjs');
 
 export default async function handler(req, res) {
-    // Only allow POST requests for signup
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method Not Allowed' });
-    }
+    if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' });
 
     const { email, password, first_name, last_name } = req.body;
 
-    // Validation to prevent empty records in Neon
+    // Check for missing fields (matches your error screenshot)
     if (!email || !password || !first_name) {
-        return res.status(400).json({ 
-            message: 'Missing required fields: email, password, and first_name.' 
-        });
+        return res.status(400).json({ message: 'Missing required fields: email, password, and first_name.' });
     }
 
     try {
-        // Hash password for security
         const hashed = await bcrypt.hash(password, 10);
         
-        // Insert into Neon 'users' table using your schema's 'role' column
-        // Ensure the 'User' role exists in your 'roles' table first
+        // IMPORTANT: This assumes 'User' exists in your 'roles' table.
+        // If it fails, check your 'roles' table in Neon.
         const sql = `
             INSERT INTO users (email, password, first_name, last_name, role)
             VALUES ($1, $2, $3, $4, 'User')
@@ -29,17 +26,13 @@ export default async function handler(req, res) {
         `;
         
         const result = await query(sql, [email, hashed, first_name, last_name]);
-        
-        return res.status(201).json({
-            message: 'Account created successfully',
-            user: result.rows[0]
-        });
+        res.status(201).json({ message: 'Success', user: result.rows[0] });
     } catch (err) {
-        console.error('Signup DB Error:', err);
-        // Handle unique constraint violation (user already exists)
+        console.error('Signup Error:', err);
+        // Error 23505 is a unique constraint violation (email already exists)
         if (err.code === '23505') {
-            return res.status(409).json({ message: 'User with this email already exists.' });
+            return res.status(409).json({ message: 'Email already registered.' });
         }
-        return res.status(500).json({ message: 'Database error during registration.' });
+        res.status(500).json({ message: 'Database error during registration.' });
     }
 }
