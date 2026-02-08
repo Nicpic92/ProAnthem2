@@ -1,5 +1,6 @@
 /**
  * api/login.js - FULL UNTRUNCATED CODE
+ * Synchronized with fresh Neon Schema
  */
 const { query } = require('./_db');
 const bcrypt = require('bcryptjs');
@@ -11,7 +12,7 @@ export default async function handler(req, res) {
     const { email, password } = req.body;
 
     try {
-        // Query adjusted to your JSON structure: password_hash and role_id
+        // We join with 'roles' to get permissions immediately upon login
         const userRes = await query(`
             SELECT u.*, r.can_access_tool, r.can_manage_band, r.can_use_setlists, r.can_use_stems 
             FROM users u
@@ -21,22 +22,29 @@ export default async function handler(req, res) {
 
         const user = userRes.rows[0];
 
-        // Validate against the password_hash found in your JSON
-        if (!user || !(await bcrypt.compare(password, user.password_hash))) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+        // 1. Check if user exists
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid email or password.' });
         }
 
-        // Role-based access check
+        // 2. Check password against 'password_hash' column
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid email or password.' });
+        }
+
+        // 3. Check if role allows access
         if (!user.can_access_tool) {
-            return res.status(403).json({ message: 'Access denied: Role restricted.' });
+            return res.status(403).json({ message: 'Your account does not have access permissions.' });
         }
 
+        // 4. Create Token Payload
         const payload = {
             user: {
                 id: user.id,
                 email: user.email,
-                band_id: user.band_id,
                 role_id: user.role_id,
+                band_id: user.band_id,
                 permissions: {
                     manage_band: user.can_manage_band,
                     setlists: user.can_use_setlists,
@@ -46,9 +54,14 @@ export default async function handler(req, res) {
         };
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
-        res.status(200).json({ token });
+        
+        return res.status(200).json({ 
+            token,
+            message: 'Login successful'
+        });
+
     } catch (err) {
-        console.error('Login Error:', err);
-        res.status(500).json({ message: 'Database error' });
+        console.error('Login API Error:', err);
+        return res.status(500).json({ message: 'Database error', debug: err.message });
     }
 }
