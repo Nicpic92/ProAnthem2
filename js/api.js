@@ -1,67 +1,40 @@
 /**
- * ProAnthem API Connector
- * Centralizes all fetch calls to the Vercel /api folder.
- */
-
-// Retrieve the token from browser storage
-function getToken() {
-    return localStorage.getItem('user_token');
-}
-
-/**
- * Global API Request handler
- * @param {string} endpoint - The function name in /api (e.g., 'login')
- * @param {object} data - The payload to send
- * @param {string} method - GET, POST, PUT, or DELETE
+ * js/api.js - Master API Request Helper
  */
 export async function apiRequest(endpoint, data = null, method = 'GET') {
-    const token = getToken();
-    
-    const options = { 
-        method, 
-        headers: { 
-            'Content-Type': 'application/json' 
-        } 
+    const token = localStorage.getItem('pa_token');
+    const options = {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+        }
     };
 
-    // Attach Bearer token for authenticated routes
-    if (token) {
-        options.headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    // Attach body data for write operations
-    if (data && (method === 'POST' || method === 'PUT' || method === 'DELETE')) {
+    if (data && method !== 'GET') {
         options.body = JSON.stringify(data);
     }
 
     try {
         const response = await fetch(`/api/${endpoint}`, options);
-
-        // Handle unauthorized or expired sessions
-        if (response.status === 401) {
-            localStorage.removeItem('user_token');
-            window.location.href = '/proanthem_index.html'; 
-            throw new Error('Session expired. Please log in again.');
+        
+        // Handle non-JSON (HTML 404/500) responses gracefully
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const errorText = await response.text();
+            console.error("Server returned non-JSON:", errorText);
+            throw new Error("Server communication error. Check your API routes.");
         }
 
-        // Return null for successful "No Content" responses
-        if (response.status === 204) return null;
-
-        const responseData = await response.json();
-
+        const result = await response.json();
+        
         if (!response.ok) {
-            throw new Error(responseData.message || `API Error: ${response.status}`);
+            throw new Error(result.message || 'API request failed.');
         }
 
-        return responseData;
-    } catch (error) {
-        console.error(`API Request Error [${endpoint}]:`, error);
-        throw error;
+        return result;
+    } catch (err) {
+        console.error(`API Request Error [${endpoint}]:`, err);
+        throw err;
     }
 }
-
-// Shortcut exports for common band tools
-export const getSetlists = () => apiRequest('setlists');
-export const saveSetlist = (data) => apiRequest('setlists', data, 'POST');
-export const getFinances = () => apiRequest('finances');
-export const getMerch = () => apiRequest('merch');
