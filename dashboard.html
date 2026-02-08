@@ -12,23 +12,27 @@
         <header class="flex justify-between items-center mb-12">
             <div>
                 <h1 class="text-3xl font-bold italic">PRO<span class="text-blue-500">ANTHEM</span></h1>
-                <p id="welcome-msg" class="text-gray-500 text-sm mt-1">Authenticating...</p>
+                <p id="welcome-msg" class="text-gray-500 text-sm mt-1 tracking-wide">Authenticating...</p>
             </div>
-            <button onclick="handleLogout()" class="px-6 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold hover:bg-red-900/20 hover:text-red-500 transition-all">Logout</button>
+            <button onclick="handleLogout()" class="px-6 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold hover:bg-red-950/30 hover:text-red-500 transition-all">Logout</button>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-gray-900 border border-gray-800 p-8 rounded-3xl">
-                <h3 class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-2">Account Status</h3>
+            <div class="bg-gray-900/50 border border-gray-800 p-8 rounded-3xl">
+                <h3 class="text-gray-600 text-[10px] font-bold uppercase tracking-widest mb-3">Artist Profile</h3>
                 <p id="user-role" class="text-xl font-bold text-blue-400">Loading...</p>
+                <p id="user-email" class="text-xs text-gray-500 mt-1">--</p>
             </div>
-            <div class="bg-gray-900 border border-gray-800 p-8 rounded-3xl">
-                <h3 class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-2">Song Library</h3>
-                <p class="text-xl font-bold">0 Active</p>
+
+            <div class="bg-gray-900/50 border border-gray-800 p-8 rounded-3xl">
+                <h3 class="text-gray-600 text-[10px] font-bold uppercase tracking-widest mb-3">Song Library</h3>
+                <p class="text-xl font-bold">0 Active Sheets</p>
+                <a href="/ProjectAnthem.html" class="text-blue-500 text-[10px] font-bold uppercase mt-4 block hover:underline">Open Editor →</a>
             </div>
-            <div class="bg-gray-900 border border-gray-800 p-8 rounded-3xl">
-                <h3 class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-2">Band Access</h3>
-                <p id="band-status" class="text-xl font-bold text-gray-400 italic text-sm">No Band Linked</p>
+
+            <div class="bg-gray-900/50 border border-gray-800 p-8 rounded-3xl">
+                <h3 class="text-gray-600 text-[10px] font-bold uppercase tracking-widest mb-3">Band Association</h3>
+                <p id="band-status" class="text-sm text-gray-400 italic">No Band Linked Yet</p>
             </div>
         </div>
     </div>
@@ -37,11 +41,21 @@
         import { getUserPayload, logout } from './js/auth.js';
         
         const user = getUserPayload();
-        if (!user) window.location.href = '/index.html';
-
-        document.getElementById('welcome-msg').innerText = `Welcome back, ${user.email}`;
-        document.getElementById('user-role').innerText = user.role_id === 1 ? 'Administrator' : 'Artist / User';
         
+        // Redirect if not logged in
+        if (!user) {
+            window.location.href = '/index.html';
+        } else {
+            document.getElementById('welcome-msg').innerText = `Master Developer Session Active`;
+            document.getElementById('user-email').innerText = user.email;
+            document.getElementById('user-role').innerText = user.role_id === 1 ? 'Administrator' : 'Artist / User';
+            
+            if (user.band_id) {
+                document.getElementById('band-status').innerText = `Band ID: ${user.band_id}`;
+                document.getElementById('band-status').classList.remove('italic', 'text-gray-400');
+            }
+        }
+
         window.handleLogout = logout;
     </script>
 </body>
