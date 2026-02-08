@@ -1,3 +1,6 @@
+/**
+ * api/login.js - FULL UNTRUNCATED CODE
+ */
 const { query } = require('./_db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -8,33 +11,32 @@ export default async function handler(req, res) {
     const { email, password } = req.body;
 
     try {
-        // Join with your Neon 'roles' table to get granular permissions
+        // Query adjusted to your JSON structure: password_hash and role_id
         const userRes = await query(`
             SELECT u.*, r.can_access_tool, r.can_manage_band, r.can_use_setlists, r.can_use_stems 
             FROM users u
-            LEFT JOIN roles r ON u.role = r.name
+            LEFT JOIN roles r ON u.role_id = r.id
             WHERE u.email = $1
         `, [email]);
 
         const user = userRes.rows[0];
 
-        // Verify user exists and password matches
-        if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+        // Validate against the password_hash found in your JSON
+        if (!user || !(await bcrypt.compare(password, user.password_hash))) {
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Check if the role allows tool access
+        // Role-based access check
         if (!user.can_access_tool) {
-            return res.status(403).json({ message: 'Your account role does not have permission to access this tool.' });
+            return res.status(403).json({ message: 'Access denied: Role restricted.' });
         }
 
-        // Create the JWT payload with your Neon metadata
         const payload = {
             user: {
                 id: user.id,
                 email: user.email,
                 band_id: user.band_id,
-                role: user.role,
+                role_id: user.role_id,
                 permissions: {
                     manage_band: user.can_manage_band,
                     setlists: user.can_use_setlists,
@@ -44,13 +46,9 @@ export default async function handler(req, res) {
         };
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
-        
-        return res.status(200).json({ 
-            token,
-            message: 'Login successful'
-        });
+        res.status(200).json({ token });
     } catch (err) {
         console.error('Login Error:', err);
-        return res.status(500).json({ message: 'Internal server error.' });
+        res.status(500).json({ message: 'Database error' });
     }
 }
