@@ -1,4 +1,45 @@
-<script type="module">
-    import { apiRequest } from './js/api.js';
-    // handle login logic here...
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProAnthem - Your Band's Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="marketing flex flex-col min-h-screen bg-gray-900 text-white">
+    <header class="container mx-auto p-6 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <img src="/assets/logo_pa.jpg" alt="ProAnthem Logo" class="h-12">
+            <h1 class="text-4xl font-bold headline-gradient">ProAnthem</h1>
+        </div>
+        <div id="nav-auth-section">
+            <button onclick="document.getElementById('auth-modal').classList.remove('hidden')" class="btn btn-primary">Login / Sign Up</button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-20 flex-grow text-center">
+        <h2 class="text-6xl font-extrabold mb-6">Everything your band needs. <span class="text-blue-500">Free forever.</span></h2>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10">Manage setlists, stage plots, finances, and merch inventory in one bold dashboard.</p>
+        <a href="/demo" class="btn btn-secondary px-8 py-4 text-lg">Try the Live Demo</a>
+    </main>
+
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 w-full max-w-md">
+            <h3 class="text-2xl font-bold mb-6 text-center">Welcome to ProAnthem</h3>
+            <form id="login-form" class="space-y-4">
+                <input type="email" name="email" placeholder="Email" required class="w-full p-3 rounded bg-gray-900 border border-gray-600">
+                <input type="password" name="password" placeholder="Password" required class="w-full p-3 rounded bg-gray-900 border border-gray-600">
+                <button type="submit" class="w-full btn btn-primary py-3">Sign In</button>
+            </form>
+            <p class="mt-4 text-center text-sm text-gray-400">Don't have an account? <a href="#" class="text-blue-400">Sign up</a></p>
+            <button onclick="document.getElementById('auth-modal').classList.add('hidden')" class="mt-6 text-gray-500 text-sm w-full">Close</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { handleLogin } from './js/auth.js';
+        document.getElementById('login-form').addEventListener('submit', handleLogin);
+    </script>
+</body>
+</html>
