@@ -1,131 +1,85 @@
 /**
- * ProAnthem Main Orchestrator
- * Coordinates state management and module initialization.
+ * js/main.js - FULL UNTRUNCATED
+ * Master Developer Version
  */
-
 import { checkAccess, getUserPayload } from './auth.js';
 import { apiRequest } from './api.js';
-import * as ui from './modules/ui.js';
 
-// Global State
-const state = {
-    isDemo: window.location.pathname.includes('demo'),
-    activeSong: null,
-    currentTool: 'chords',
-    songs: []
-};
+let currentSongs = [];
+let activeSongId = null;
 
+// Initialize
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Guard Access
-    if (!state.isDemo && !checkAccess()) return;
-
-    // 2. Initialize UI Components
-    setupEventListeners();
-    
-    // 3. Load Initial Data
-    if (!state.isDemo) {
+    if (checkAccess()) {
         await loadSongs();
-    } else {
-        setupDemoMode();
+        setupEventListeners();
     }
 });
 
-/**
- * Loads songs from the database and populates the sidebar
- */
 async function loadSongs() {
     try {
-        const songs = await apiRequest('songs'); // Assumes api/songs.js exists
-        state.songs = songs || [];
-        ui.updateSidebarSongList(state.songs, state.activeSong?.id, selectSong);
+        currentSongs = await apiRequest('songs', null, 'GET');
+        renderSongList();
     } catch (err) {
-        ui.showNotification('Failed to load songs', 'error');
+        console.error("Load failed:", err);
     }
 }
 
-/**
- * Handles song selection and tool initialization
- */
-async function selectSong(songId) {
-    const song = state.songs.find(s => s.id === songId);
+function renderSongList() {
+    const listContainer = document.getElementById('song-list');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = currentSongs.map(song => `
+        <div class="song-item p-3 mb-2 bg-gray-900 border border-gray-800 rounded-xl cursor-pointer hover:border-blue-500 transition-all" 
+             onclick="window.selectSong(${song.id})">
+            <h4 class="font-bold text-sm">${song.title}</h4>
+            <p class="text-[10px] text-gray-500">${song.artist || 'Unknown Artist'}</p>
+        </div>
+    `).join('');
+}
+
+// THE POP-UP LOGIC
+window.selectSong = (id) => {
+    const song = currentSongs.find(s => s.id === id);
     if (!song) return;
 
-    state.activeSong = song;
-    document.getElementById('active-song-title').textContent = song.title;
-    document.getElementById('active-song-meta').textContent = song.artist || 'Unknown Artist';
+    activeSongId = id;
     
-    // Switch to current tool
-    await switchTool(state.currentTool);
-    ui.updateSidebarSongList(state.songs, songId, selectSong);
-}
+    // Update UI Elements
+    const titleDisplay = document.getElementById('song-title-display');
+    const editorArea = document.getElementById('editor-content');
 
-/**
- * Dynamic module loader for specific editors
- */
-async function switchTool(toolName) {
-    state.currentTool = toolName;
-    const container = document.getElementById('block-editor-container');
-    container.innerHTML = '<div class="flex items-center justify-center h-full"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>';
-
-    // Update Tab UI
-    document.querySelectorAll('.tool-tab').forEach(tab => {
-        if (tab.dataset.tool === toolName) {
-            tab.classList.add('active', 'bg-blue-600/20', 'text-blue-400', 'border-blue-500/50');
-        } else {
-            tab.classList.remove('active', 'bg-blue-600/20', 'text-blue-400', 'border-blue-500/50');
-        }
-    });
-
-    try {
-        switch (toolName) {
-            case 'fretboard':
-                const { initFretboard } = await import('./modules/fretboardController.js');
-                initFretboard(container, state.activeSong);
-                break;
-            case 'drums':
-                const { initDrumEditor } = await import('./modules/drumEditor.js');
-                initDrumEditor(container, state.activeSong);
-                break;
-            default: // 'chords'
-                const { initSongEditor } = await import('./modules/songEditor.js');
-                initSongEditor(container, state.activeSong);
-                break;
-        }
-    } catch (err) {
-        console.error('Module load failed:', err);
-        container.innerHTML = `<p class="p-8 text-red-500">Failed to load ${toolName} editor.</p>`;
+    if (titleDisplay) titleDisplay.innerText = song.title;
+    
+    // If using JSONB blocks, parse and display
+    if (editorArea && song.song_blocks) {
+        editorArea.value = typeof song.song_blocks === 'string' 
+            ? song.song_blocks 
+            : JSON.stringify(song.song_blocks, null, 2);
     }
-}
+    
+    console.log("Song Loaded:", song.title);
+};
 
 function setupEventListeners() {
-    // Tool Tab Switching
-    document.querySelectorAll('.tool-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            if (state.activeSong || state.isDemo) {
-                switchTool(tab.dataset.tool);
-            } else {
-                ui.showNotification('Select a song first', 'error');
+    const saveBtn = document.getElementById('save-changes-btn');
+    if (saveBtn) {
+        saveBtn.onclick = async () => {
+            const user = getUserPayload();
+            const payload = {
+                id: activeSongId,
+                title: document.getElementById('song-title-display').innerText,
+                song_blocks: document.getElementById('editor-content').value,
+                user_email: user.email
+            };
+            
+            try {
+                await apiRequest('songs', payload, 'POST');
+                alert("Changes Saved to Neon!");
+                await loadSongs();
+            } catch (err) {
+                alert("Save failed: " + err.message);
             }
-        });
-    });
-
-    // New Song Creation
-    document.getElementById('new-song-btn')?.addEventListener('click', async () => {
-        const title = prompt('Enter song title:');
-        if (!title) return;
-        
-        try {
-            const newSong = await apiRequest('songs', { title }, 'POST');
-            await loadSongs();
-            selectSong(newSong.id);
-        } catch (err) {
-            ui.showNotification('Error creating song', 'error');
-        }
-    });
-}
-
-function setupDemoMode() {
-    state.songs = [{ id: 'demo-1', title: 'Example Song', artist: 'ProAnthem Demo' }];
-    ui.updateSidebarSongList(state.songs, null, selectSong);
-    selectSong('demo-1');
+        };
+    }
 }
