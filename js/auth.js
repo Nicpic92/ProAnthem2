@@ -1,7 +1,9 @@
 /**
- * ProAnthem Client-side Auth Handler
- * Integrated with Neon Role-Based Access Control
+ * js/auth.js
+ * Master Authentication Controller for Neon Integration
  */
+
+import { apiRequest } from './api.js';
 
 export function saveToken(token) {
     localStorage.setItem('pa_token', token);
@@ -9,6 +11,24 @@ export function saveToken(token) {
 
 export function getToken() {
     return localStorage.getItem('pa_token');
+}
+
+/**
+ * The specific function your index.html is calling
+ */
+export async function handleLogin(email, password) {
+    try {
+        const data = await apiRequest('login', { email, password }, 'POST');
+        if (data.token) {
+            saveToken(data.token);
+            window.location.href = '/dashboard.html';
+        } else {
+            throw new Error(data.message || 'Login failed');
+        }
+    } catch (err) {
+        console.error('Auth Error:', err);
+        alert(err.message || 'Connection to Neon failed.');
+    }
 }
 
 export function getUserPayload() {
@@ -20,13 +40,6 @@ export function getUserPayload() {
     } catch (e) {
         return null;
     }
-}
-
-export function checkPermission(permissionName) {
-    const user = getUserPayload();
-    if (!user || !user.permissions) return false;
-    // Check against Neon role flags: manage_band, setlists, stems, etc.
-    return !!user.permissions[permissionName];
 }
 
 export function logout() {
